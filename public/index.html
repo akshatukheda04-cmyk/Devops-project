@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Smart Campus Event Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="particles"></div>
+    <!-- Ambient background orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <header>
+        <div class="header-inner">
+            <button id="modeBtn" class="icon-btn" title="Toggle theme">🌙</button>
+            <div class="header-brand">
+                <span class="header-logo">🎓</span>
+                <h1>Smart Campus Event Planner</h1>
+            </div>
+            <button id="loginBtn" class="btn-primary">Login</button>
+        </div>
+    </header>
+
+    <!-- ===== USER DASHBOARD ===== -->
+    <main id="userDashboard" style="display:none;" class="dashboard">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2 id="userWelcome">Hello!</h2>
+                <span id="userTimer" class="timer-badge">No upcoming events</span>
+            </div>
+        </section>
+
+        <section class="dash-section">
+            <div class="section-header">
+                <h3>📢 Available Events</h3>
+            </div>
+            <div class="event-grid" id="exploreGrid"></div>
+        </section>
+
+        <section class="dash-section">
+            <div class="section-header">
+                <h3>📅 My Applied Events</h3>
+            </div>
+            <ul id="appliedList"></ul>
+        </section>
+
+        <section class="dash-section">
+            <div class="section-header">
+                <h3>✅ History (Rate & Review)</h3>
+            </div>
+            <ul id="attendedList"></ul>
+        </section>
+    </main>
+
+    <!-- ===== ADMIN DASHBOARD ===== -->
+    <main id="adminDashboard" style="display:none;" class="dashboard">
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-icon">🟢</span>
+                <div>
+                    <div class="stat-label">Active Events</div>
+                    <div class="stat-value" id="activeCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🏁</span>
+                <div>
+                    <div class="stat-label">Held Events</div>
+                    <div class="stat-value" id="heldCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <section id="adminPanel" class="dash-section">
+            <div class="section-header">
+                <h2>🛠️ Create Event</h2>
+            </div>
+            <form id="eventForm" class="event-form">
+                <input type="text" id="eName" placeholder="Event Name" required>
+                <div class="form-row">
+                    <input type="text" id="eVenue" placeholder="Venue" required>
+                    <input type="time" id="eTime" required>
+                </div>
+                <div class="form-row">
+                    <input type="date" id="eDate" required>
+                    <input type="number" id="eSeats" placeholder="Total Seats" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="eAnchor" placeholder="Anchor Name" required>
+                </div>
+                <div class="form-row">
+                    <select id="eDept" required>
+                        <option value="" disabled selected>Dept</option>
+                        <option value="COMS">COMS</option>
+                        <option value="DS">DS</option>
+                        <option value="IT">IT</option>
+                        <option value="CS">CS</option>
+                        <option value="MECH">MECH</option>
+                        <option value="CIVIL">CIVIL</option>
+                    </select>
+                    <select id="eType" required>
+                        <option value="" disabled selected>Type</option>
+                        <option value="Dance">Dance</option>
+                        <option value="Music">Music</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Session">Session</option>
+                    </select>
+                </div>
+                <button type="submit" id="submitEventBtn" class="btn-primary">💾 Save Event</button>
+            </form>
+        </section>
+
+        <section class="dash-section">
+            <div class="section-header">
+                <h3>📊 Event Analytics & Feedback</h3>
+            </div>
+            <div id="analyticsSection" class="event-grid"></div>
+        </section>
+
+        <section class="dash-section">
+            <div class="section-header">
+                <h3>📅 Live Events</h3>
+            </div>
+            <div class="event-grid" id="adminActiveGrid"></div>
+        </section>
+    </main>
+
+    <!-- ===== AUTH MODAL ===== -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-glow"></div>
+            <h2 id="authTitle">Login</h2>
+            <div class="role-selector">
+                <label class="role-label">
+                    <input type="radio" name="loginRole" value="user" checked onchange="toggleFields()">
+                    <span>👤 User</span>
+                </label>
+                <label class="role-label">
+                    <input type="radio" name="loginRole" value="admin" onchange="toggleFields()">
+                    <span>🛡️ Admin</span>
+                </label>
+            </div>
+            <input type="text" id="authEmail" placeholder="Email / Username">
+            <input type="password" id="authPass" placeholder="Password">
+            <button id="authBtn" class="btn-primary">Proceed</button>
+            <div id="switchBox"><a id="switchLink">Don't have an account? Register</a></div>
+        </div>
+    </div>
+
+    <!-- ===== REVIEW MODAL ===== -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <div class="modal-glow"></div>
+            <h3>⭐ Event Feedback</h3>
+            <select id="rateVal">
+                <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                <option value="3">⭐⭐⭐ (3/5)</option>
+                <option value="2">⭐⭐ (2/5)</option>
+                <option value="1">⭐ (1/5)</option>
+            </select>
+            <textarea id="reviewText" placeholder="Your Review..." rows="3"></textarea>
+            <input type="text" id="suggestionText" placeholder="Your Suggestion for next time...">
+            <button id="submitReviewBtn" class="btn-primary">Submit Feedback</button>
+        </div>
+    </div>
+
+    <!-- ===== DELETE CONFIRMATION MODAL ===== -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content delete-modal-content">
+            <div class="delete-icon">🗑️</div>
+            <h3>Delete Event?</h3>
+            <p id="deleteModalMsg">This will permanently remove the event and all related data.</p>
+            <div class="delete-modal-actions">
+                <button id="confirmDeleteBtn" class="btn-danger">Yes, Delete</button>
+                <button id="cancelDeleteBtn" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+node_modules/
+.npm-cache/
+campus_planner.db
+campus_planner.db-shm
+campus_planner.db-wal
+data/
+.env
+.env.*
+!.env.example
+coverage/
+*.log
+main.py
+mains.py
