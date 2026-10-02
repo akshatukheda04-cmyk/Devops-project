@@ -36,6 +36,9 @@ async function init() {
             await renderUserDashboard();
             setupReminders();
             updateUserReminder();
+            // Refresh event status so past events move into History and show the Rate button
+            // even when the user keeps the dashboard open across the event's scheduled time.
+            setInterval(renderUserDashboard, 30000);
         }
     }
 }

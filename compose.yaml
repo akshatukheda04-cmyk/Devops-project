@@ -4,16 +4,21 @@ services:
     container_name: college-event-app
     restart: unless-stopped
     env_file: .env
+    environment:
+      DB_PATH: /app/data/campus_planner.db
+      TZ: Asia/Kolkata
     ports:
       - "3000:3000"
     volumes:
-      - event-data:/app/data
+      - ./data:/app/data
     networks:
       - event-monitoring
 
   prometheus:
     image: prom/prometheus:v3.5.0
     container_name: college-event-prometheus
+    # Use Prometheus's numeric nobody UID to avoid Docker user-name lookup issues.
+    user: "65534:65534"
     restart: unless-stopped
     ports:
       - "9090:9090"
@@ -41,7 +46,6 @@ services:
       - event-monitoring
 
 volumes:
-  event-data:
   prometheus-data:
   grafana-data:
 
